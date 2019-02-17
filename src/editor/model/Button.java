@@ -1,13 +1,19 @@
 package editor.model;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Cursor;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+import editor.model.Button;
 import editor.utiles.*;
 
 public class Button extends JFrame {
+
+	public static JPanel paneFile;
 
 	private JMenu[] menus = { new JMenu("File"), new JMenu("Edit"), new JMenu("Paint") };
 	private JMenuItem[] itemsFile = { new JMenuItem("Save"), new JMenuItem("Open") };
@@ -35,7 +41,7 @@ public class Button extends JFrame {
 		panelVert.add(pickRectangleShape.rectangle);
 		panelVert.add(pickFreeShape.free);
 		panelVert.add(zoomButton.zoom);
-		///!!!!! Refactore menu!
+		/// !!!!! Refactore menu!
 		for (int i = 0; i < itemsFile.length; i++) {
 			menus[0].add(itemsFile[i]);
 		}
@@ -51,6 +57,7 @@ public class Button extends JFrame {
 		for (int i = 0; i < additionalShape.length; i++) {
 			itemsPaint[1].add(additionalShape[i]);
 		}
+		/// !!!!! End of future refactoring
 		JMenuBar menuBar = new JMenuBar();
 		for (JMenu jm : menus) {
 			menuBar.add(jm);
@@ -58,7 +65,7 @@ public class Button extends JFrame {
 		setJMenuBar(menuBar);
 		add(panelVert, BorderLayout.WEST);
 		ImageFile image = new ImageFile();
-		JPanel paneFile = new JPanel() {
+		paneFile = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics graph) {
 				super.paintComponent(graph);
@@ -66,7 +73,35 @@ public class Button extends JFrame {
 			}
 		};
 		add(paneFile);
-		//paneFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		ActionListener actionListener = new TestActionListener() {// анонимный внутренний класс
+			public void actionPerformed(ActionEvent e) {
+				Toolkit toolkit = Toolkit.getDefaultToolkit();
+				Image cursor = toolkit.getImage("G:\\pencil.png");
+				Point point = new Point(0, 0);
+				Cursor cursor1 = toolkit.createCustomCursor(cursor, point, "Cursor");
+				Button.paneFile.setCursor(cursor1);
+				 addMouseMotionListener(new MouseMotionAdapter() {
+		                @Override
+		                public void mouseMoved(MouseEvent e) {
+		                	
+		                	String message = "\"Это уведмление\"\n" + "Программа-таки реагирует\n" +
+		                			 "на нажатие кнопки"; JOptionPane.showMessageDialog(new JFrame(), message,
+		                			 "Dialog", JOptionPane.INFORMATION_MESSAGE);
+		                }
+		            });
+				
+			}
+		};
+		pencilButton.pencil.addActionListener(actionListener);
+
+		ActionListener actionListener1 = new TestActionListener() {// анонимный внутренний класс
+			public void actionPerformed(ActionEvent e) {
+				Button.paneFile.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+			}
+		};
+		CircleButton.circle.addActionListener(actionListener1);
+
 	}
 
 	public static void main(String[] args) throws IOException {

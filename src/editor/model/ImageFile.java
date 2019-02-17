@@ -8,7 +8,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class ImageFile {
-	public BufferedImage image;
+	public static BufferedImage image;
 
 	public ImageFile() throws IOException {
 		try {
