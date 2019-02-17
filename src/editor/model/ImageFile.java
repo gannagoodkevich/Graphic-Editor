@@ -13,14 +13,17 @@ public class ImageFile {
 	public ImageFile() throws IOException {
 		try {
 			BufferedImage img = new BufferedImage(1800, 1000, BufferedImage.TYPE_INT_RGB);
-
 			File f = new File("G:\\MyFile.png");
 			int r = 255;
 			int g = 255;
 			int b = 243;
-			img.setRGB(r, g, b);
-			ImageIO.write(img, "PNG", f);
+			Color myWhite = new Color(r, g, b);
 			image = ImageIO.read(f);
+			for (int x=0; x<1800; x++) {
+				for(int y=0; y<1000; y++) {
+					image.setRGB(x, y, myWhite.getRGB());
+				}
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

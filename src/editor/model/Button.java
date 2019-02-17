@@ -62,7 +62,7 @@ public class Button extends JFrame {
 			@Override
 			protected void paintComponent(Graphics graph) {
 				super.paintComponent(graph);
-				graph.drawImage(image.image, 10, 0, this);
+				graph.drawImage(image.image, 10, 0, null);
 			}
 		};
 		add(paneFile);
