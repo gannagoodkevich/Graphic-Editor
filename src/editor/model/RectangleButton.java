@@ -21,13 +21,14 @@ public class RectangleButton {
 	}
 	
 	public void changeMouseRect() {
-		ActionListener actionListener = new TestActionListener() {// анонимный внутренний класс
+		ActionListener actionListener = new TestActionListener() {// анонимный внутренний класс(реализует интерфейс)
 			public void actionPerformed(ActionEvent e) {
 				Toolkit toolkit = Toolkit.getDefaultToolkit();
 				Image cursor = toolkit.getImage("G:\\square.png");
 				Point point = new Point(0, 0);
 				Cursor cursor1 = toolkit.createCustomCursor(cursor, point, "Cursor");
 				Button.paneFile.setCursor(cursor1);
+				drowRectangle(800, 200, 950, 700);
 			}
 		};
 		rect.addActionListener(actionListener);
