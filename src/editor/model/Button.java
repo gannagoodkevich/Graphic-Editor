@@ -14,6 +14,7 @@ import editor.utiles.*;
 public class Button extends JFrame {
 
 	public static JPanel paneFile;
+	public static ImageFile image;
 
 	private JMenu[] menus = { new JMenu("File"), new JMenu("Edit"), new JMenu("Paint") };
 	private JMenuItem[] itemsFile = { new JMenuItem("Save"), new JMenuItem("Open") };
@@ -35,7 +36,7 @@ public class Button extends JFrame {
 		panelVert.setLayout(new BoxLayout(panelVert, BoxLayout.Y_AXIS));
 		panelVert.add(pencilButton.pencil);
 		panelVert.add(circleButton.circle);
-		panelVert.add(rectangleButton.rectangle);
+		panelVert.add(rectangleButton.rect);
 		panelVert.add(eraserButton.eraser);
 		panelVert.add(textButton.text);
 		panelVert.add(pickRectangleShape.rectangle);
@@ -64,44 +65,18 @@ public class Button extends JFrame {
 		}
 		setJMenuBar(menuBar);
 		add(panelVert, BorderLayout.WEST);
-		ImageFile image = new ImageFile();
+		image = new ImageFile();
 		paneFile = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics graph) {
+				image.drowRectangle(200, 200, 500, 500);
+				rectangleButton.drowRectangle(100, 700, 300, 900);
 				super.paintComponent(graph);
 				graph.drawImage(image.image, 10, 0, null);
-			}
-		};
-		add(paneFile);
-
-		ActionListener actionListener = new TestActionListener() {// анонимный внутренний класс
-			public void actionPerformed(ActionEvent e) {
-				Toolkit toolkit = Toolkit.getDefaultToolkit();
-				Image cursor = toolkit.getImage("G:\\pencil.png");
-				Point point = new Point(0, 0);
-				Cursor cursor1 = toolkit.createCustomCursor(cursor, point, "Cursor");
-				Button.paneFile.setCursor(cursor1);
-				 addMouseMotionListener(new MouseMotionAdapter() {
-		                @Override
-		                public void mouseMoved(MouseEvent e) {
-		                	
-		                	String message = "\"Это уведмление\"\n" + "Программа-таки реагирует\n" +
-		                			 "на нажатие кнопки"; JOptionPane.showMessageDialog(new JFrame(), message,
-		                			 "Dialog", JOptionPane.INFORMATION_MESSAGE);
-		                }
-		            });
 				
 			}
 		};
-		pencilButton.pencil.addActionListener(actionListener);
-
-		ActionListener actionListener1 = new TestActionListener() {// анонимный внутренний класс
-			public void actionPerformed(ActionEvent e) {
-				Button.paneFile.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-			}
-		};
-		CircleButton.circle.addActionListener(actionListener1);
-
+		add(paneFile);
 	}
 
 	public static void main(String[] args) throws IOException {
