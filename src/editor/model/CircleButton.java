@@ -6,14 +6,17 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import editor.utiles.TestActionListener;
 
-public class CircleButton {
+public class CircleButton{
 	public static JButton circle;
+	
 
 	public CircleButton() {
 		circle = new JButton(new ImageIcon("G:\\circle.png"));

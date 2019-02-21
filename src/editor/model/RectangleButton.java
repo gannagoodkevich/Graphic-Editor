@@ -1,6 +1,7 @@
 package editor.model;
 
 import java.awt.Cursor;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -28,14 +29,10 @@ public class RectangleButton {
 				Point point = new Point(0, 0);
 				Cursor cursor1 = toolkit.createCustomCursor(cursor, point, "Cursor");
 				Button.paneFile.setCursor(cursor1);
-				drowRectangle(800, 200, 950, 700);
 			}
 		};
 		rect.addActionListener(actionListener);
 	}
-	
-	public void drowRectangle(int x1, int y1, int x2, int y2) {
-		Button.image.drowRectangle(x1, y1, x2, y2);
-	}
+
 	
 }

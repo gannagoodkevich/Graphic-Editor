@@ -1,13 +1,15 @@
 package editor.model;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
-public class ImageFile {
+public class ImageFile extends JPanel{
 	public BufferedImage image;
 	private Color myWhite;
 	private Color currentColor;
@@ -37,6 +39,14 @@ public class ImageFile {
 			}
 		}
 	}
+	
+	public void drowLine(int x1, int x2) {
+		for (int x = 1; x < x2; x++) {
+			for(int y=x1-2; y<x1; y++)
+			image.setRGB(x, y, currentColor.getRGB());
+		}
+	}
+	
 	
 	public void changeColor(int r, int g, int b) {
 		currentColor = new Color(r, g, b);

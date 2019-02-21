@@ -3,10 +3,11 @@ package editor.model;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Cursor;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 import editor.model.Button;
 import editor.utiles.*;
@@ -15,7 +16,30 @@ public class Button extends JFrame {
 
 	public static JPanel paneFile;
 	public static ImageFile image;
+	List<Point> pointsRectangle;
+	
+	class Clicker extends MouseAdapter {
 
+		public void mouseClicked(MouseEvent e) {
+			onClick(e.getPoint());
+		}// mouseClicked
+	}// Clicker
+	
+	public void paint(Graphics g) {
+		super.paint(g);
+		g.setColor(Color.BLACK);
+		for (Point p : pointsRectangle) {
+			g.drawOval(p.x, p.y, 300, 300);
+		} // for
+		//repaint();
+	}// paint
+
+	void onClick(Point p) {
+		pointsRectangle.add(p);
+		repaint();
+	}// onClick
+	
+	
 	private JMenu[] menus = { new JMenu("File"), new JMenu("Edit"), new JMenu("Paint") };
 	private JMenuItem[] itemsFile = { new JMenuItem("Save"), new JMenuItem("Open") };
 	private JMenuItem[] itemsEdit = { new JMenuItem("Resize"), new JMenuItem("Pick"), new JMenuItem("Text") };
@@ -24,6 +48,7 @@ public class Button extends JFrame {
 	private JMenuItem[] additionalShape = { new JMenuItem("Rectangle"), new JMenuItem("Circle") };
 
 	public Button() throws IOException {
+		pointsRectangle = new LinkedList<Point>();
 		PencilButton pencilButton = new PencilButton();
 		CircleButton circleButton = new CircleButton();
 		RectangleButton rectangleButton = new RectangleButton();
@@ -66,17 +91,17 @@ public class Button extends JFrame {
 		setJMenuBar(menuBar);
 		add(panelVert, BorderLayout.WEST);
 		image = new ImageFile();
-		paneFile = new JPanel() {
+		paneFile = new JPanel(){
 			@Override
 			protected void paintComponent(Graphics graph) {
 				image.drowRectangle(200, 200, 500, 500);
-				rectangleButton.drowRectangle(100, 700, 300, 900);
+				image.drowLine(100, 500);
 				super.paintComponent(graph);
 				graph.drawImage(image.image, 10, 0, null);
-				
 			}
 		};
 		add(paneFile);
+		paneFile.addMouseListener(new Clicker());
 	}
 
 	public static void main(String[] args) throws IOException {
