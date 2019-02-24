@@ -1,6 +1,8 @@
 package editor.model;
 
+import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -8,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,7 +36,6 @@ public class CircleButton{
 				Button.paneFile.setCursor(cursor1);
 			}
 		};
-		circle.addActionListener(actionListener);
 	}
 
 }

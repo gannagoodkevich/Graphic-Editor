@@ -12,11 +12,12 @@ import java.util.List;
 import editor.model.Button;
 import editor.utiles.*;
 
+
 public class Button extends JFrame {
 
 	public static JPanel paneFile;
 	public static ImageFile image;
-	List<Point> pointsRectangle;
+	public static List<Point> pointsRectangle;
 	
 	class Clicker extends MouseAdapter {
 
@@ -25,18 +26,26 @@ public class Button extends JFrame {
 		}// mouseClicked
 	}// Clicker
 	
-	public void paint(Graphics g) {
-		super.paint(g);
+	public void paintComponentCir(Graphics g) {
+		//super.paintComponents(g);
 		g.setColor(Color.BLACK);
 		for (Point p : pointsRectangle) {
 			g.drawOval(p.x, p.y, 300, 300);
 		} // for
 		//repaint();
 	}// paint
+	
+	public void paintComponentRect(Graphics g) {
+		g.setColor(Color.BLACK);
+		for (Point p : pointsRectangle) {
+			g.drawRect(p.x, p.y, 400, 200);;
+		} // for
+		//repaint();
+	}// paint
 
 	void onClick(Point p) {
 		pointsRectangle.add(p);
-		repaint();
+		paintComponentCir(getGraphics());
 	}// onClick
 	
 	
@@ -94,8 +103,6 @@ public class Button extends JFrame {
 		paneFile = new JPanel(){
 			@Override
 			protected void paintComponent(Graphics graph) {
-				image.drowRectangle(200, 200, 500, 500);
-				image.drowLine(100, 500);
 				super.paintComponent(graph);
 				graph.drawImage(image.image, 10, 0, null);
 			}
