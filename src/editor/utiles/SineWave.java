@@ -1,4 +1,4 @@
-package editor.utiles;
+/*package editor.utiles;
 
 import java.awt.BorderLayout;
 
@@ -27,4 +27,4 @@ public class SineWave extends JFrame {
 	public static void main(String[] args) {
 		Run.run(new SineWave(), 700, 400);
 	}
-}
+}*/
