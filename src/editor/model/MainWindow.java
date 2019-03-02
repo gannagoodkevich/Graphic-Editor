@@ -11,51 +11,119 @@ import java.util.List;
 
 import editor.utiles.*;
 
-public class MainWindow /*extends JFrame*/ {
+public class MainWindow {
 
+	private static final int WORK_AREA_WIDTH = 1800;
+	private static final int WORK_AREA_HIGHT = 1000;
+	private static final int AREA_WIDTH = 1920;
+	private static final int AREA_HIGHT = 1080;
+	private static final String PENCIL_PATH = "G:\\pencil.png";
+	private static final String CIRCLE_PATH = "G:\\circle.png";
+	private static final String RECTANGLE_PATH = "G:\\square.png";
+	private static final String ERASER_PATH = "G:\\eraser.png";
+	private static final String TEXT_PATH = "G:\\text.png";
+	private static final String PICK_RECT_PATH = "G:\\pick1.png";
+	private static final String PICK_FREE_PATH = "G:\\pick2.png";
+	private static final String ZOOM_PATH = "G:\\find.png";
 	public JFrame main;
-	public static JPanel paneFile;
-	public BufferedImage image;
-	
-	public List<Point> pointsRectangle;
-	public List<Point> pointsCircle;
-	public List<Point> pointsPencil;
-	public List<Point> pointsEraser;
+	public JPanel paneFile;
+	JDialog dialog;
+	BufferedImage image;
+	JTextPane textField;
+	JColorChooser color;
+	File f;
+	Printable pr;
+
+	List<Point> pointsText;
+
 	int boo;
-	
-	private JMenu[] menus = { new JMenu("File"), new JMenu("Edit"), new JMenu("Paint") };
-	private JMenuItem[] itemsFile = { new JMenuItem("Save"), new JMenuItem("Open") };
-	private JMenuItem[] itemsEdit = { new JMenuItem("Resize"), new JMenuItem("Pick"), new JMenuItem("Text") };
-	private JMenuItem[] itemsPaint = { new JMenuItem("Pencil"), new JMenuItem("Shape"), new JMenuItem("Eraser") };
-	private JMenuItem[] additionalPick = { new JMenuItem("Rectangle"), new JMenuItem("Free") };
-	private JMenuItem[] additionalShape = { new JMenuItem("Rectangle"), new JMenuItem("Circle") };
-	
+	int startX;
+	int startY;
+	int endX;
+	int endY;
+
+	JMenu[] menus = { new JMenu("File"), new JMenu("Edit"), new JMenu("Paint") };
+	JMenuItem[] itemsFile = { new JMenuItem("Save"), new JMenuItem("Open") };
+	JMenuItem[] itemsEdit = { new JMenuItem("Resize"), new JMenuItem("Pick"), new JMenuItem("Text") };
+	JMenuItem[] itemsPaint = { new JMenuItem("Pencil"), new JMenuItem("Shape"), new JMenuItem("Eraser") };
+	JMenuItem[] additionalPick = { new JMenuItem("Rectangle"), new JMenuItem("Free") };
+	JMenuItem[] additionalShape = { new JMenuItem("Rectangle"), new JMenuItem("Circle") };
+
 	Clicker clicker;
 	Color myWhite = new Color(255, 255, 243);
+	int curRed = 120;
+	int curGreen = 50;
+	int curBlue = 120;
 
 ///////////// That part of code is about mouse clicking
-	
+
+	interface Printable {
+		public void print(Graphics g);
+	}
+
+	class Pencil implements Printable {
+		@Override
+		public void print(Graphics g) {
+			g.setColor(color.getColor());
+			g.drawLine(startX, startY, endX, endY);
+			try {
+				ImageIO.write(image, "png", f);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	class Circle implements Printable {
+		@Override
+		public void print(Graphics g) {
+			g.setColor(color.getColor());
+			g.fillOval(startX, startY, Math.abs((endX - startX) / 2), Math.abs((endX - startX) / 2));
+			try {
+				ImageIO.write(image, "png", f);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	class Eraser implements Printable {
+		@Override
+		public void print(Graphics g) {
+			g.setColor(myWhite);
+			g.fillRect(startX, startY, Math.abs(endX - startX), Math.abs(endY - startY));
+			try {
+				ImageIO.write(image, "png", f);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	class Rectangle implements Printable {
+		@Override
+		public void print(Graphics g) {
+			g.setColor(color.getColor());
+			g.fillRect(startX, startY, Math.abs(endX - startX), Math.abs(endY - startY));
+			try {
+				ImageIO.write(image, "png", f);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
 	class Clicker extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			switch (boo) {
-			case 1:
-				pointsRectangle.add(e.getPoint());
-				paintComponentRec(main.getGraphics());
-				break;
-			case 2:
-				pointsCircle.add(e.getPoint());
-				paintComponentCir(main.getGraphics());
-				break;
-			case 3:
-				pointsPencil.add(e.getPoint());
-				paintComponentPen(main.getGraphics());
-				break;
-			case 4:
-				pointsEraser.add(e.getPoint());
-				erase(main.getGraphics());
-				break;
 			case 5:
+				textField = new JTextPane();
+				textField.setText("Add text here!");
+				pointsText.add(e.getPoint());
+				textField.setBackground(myWhite);
+				paintComponentText(textField);
+				paneFile.add(textField);
 				break;
 			case 6:
 				break;
@@ -65,81 +133,68 @@ public class MainWindow /*extends JFrame*/ {
 				break;
 			}
 		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			startX = e.getX();
+			startY = e.getY();
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			endX = e.getX();
+			endY = e.getY();
+			pr.print(main.getGraphics());
+		}
 	}
 
 ///////////// That part of code is about painting	
+
 	
-	public void paintComponentCir(Graphics g) {
-		g.setColor(Color.BLACK);
-		for (Point p : pointsCircle) {
-			g.drawOval(p.x, p.y, 300, 300);
-		} 
-	}
 
-	public void paintComponentRec(Graphics g) {
-		g.setColor(Color.BLACK);
-		for (Point p : pointsRectangle) {
-			g.drawRect(p.x, p.y, 400, 200);
+	public void paintComponentText(JTextPane textField) {
+		for (Point p : pointsText) {
+			textField.setBounds(p.x, p.y, 100, 50);
 		}
 	}
 
-	public void paintComponentPen(Graphics g) {
-		g.setColor(Color.BLACK);
-		for (Point p : pointsPencil) {
-			g.drawRect(p.x, p.y, 1, 1);
-		}
-	}
-
-	public void erase(Graphics g) {
-		g.setColor(myWhite);
-		for (Point p : pointsEraser) {
-			g.fillRect(p.x, p.y, 300, 300);
-		}
-	}
-	
 /////////////
 
 	public MainWindow() throws IOException {
-		LinkedList<String> paths = new LinkedList<String>();
-		paths.add("G:\\pencil.png");
-		paths.add("G:\\circle.png");
-		paths.add("G:\\square.png");
-		paths.add("G:\\eraser.png");
-		paths.add("G:\\text.png");
-		paths.add("G:\\pick1.png");
-		paths.add("G:\\pick2.png");
-		paths.add("G:\\find.png");
 		try {
-			BufferedImage img = new BufferedImage(1800, 1000, BufferedImage.TYPE_INT_RGB);
-			File f = new File("G:\\MyFile.png");
+			image = new BufferedImage(WORK_AREA_WIDTH, WORK_AREA_HIGHT, BufferedImage.TYPE_INT_RGB);
+			f = new File("G:\\MyFile.png");
 			myWhite = new Color(255, 255, 243);
 			image = ImageIO.read(f);
-			for (int x = 0; x < 1800; x++) {
-				for (int y = 0; y < 1000; y++) {
+			for (int x = 0; x < WORK_AREA_WIDTH; x++) {
+				for (int y = 0; y < WORK_AREA_HIGHT; y++) {
 					image.setRGB(x, y, myWhite.getRGB());
 				}
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		JButton pencilButton = new JButton(new ImageIcon("G:\\pencil.png"));
-		changeMouse(pencilButton, new String("G:\\pencil.png"));
-		JButton circleButton = new JButton(new ImageIcon("G:\\circle.png"));
-		changeMouse(circleButton, new String("G:\\circle.png"));
-		JButton rectangleButton = new JButton(new ImageIcon("G:\\square.png"));
-		changeMouse(rectangleButton, new String("G:\\square.png"));
-		JButton eraserButton = new JButton(new ImageIcon("G:\\eraser.png"));
-		changeMouse(eraserButton, new String("G:\\eraser.png"));
-		JButton textButton = new JButton(new ImageIcon("G:\\text.png"));
-		changeMouse(textButton, new String("G:\\text.png"));
-		JButton pickRectangleShape = new JButton(new ImageIcon("G:\\pick1.png"));
-		changeMouse(pickRectangleShape, new String("G:\\pick1.png"));
-		JButton pickFreeShape = new JButton(new ImageIcon("G:\\pick2.png"));
-		changeMouse(pickFreeShape, new String("G:\\pick2.png"));
-		JButton zoomButton = new JButton(new ImageIcon("G:\\find.png"));
-		changeMouse(zoomButton, new String("G:\\find.png"));
+		JButton pencilButton = new JButton(new ImageIcon(PENCIL_PATH));
+		changeMouse(pencilButton, PENCIL_PATH);
+		JButton circleButton = new JButton(new ImageIcon(CIRCLE_PATH));
+		changeMouse(circleButton, CIRCLE_PATH);
+		JButton rectangleButton = new JButton(new ImageIcon(RECTANGLE_PATH));
+		changeMouse(rectangleButton, RECTANGLE_PATH);
+		JButton eraserButton = new JButton(new ImageIcon(ERASER_PATH));
+		changeMouse(eraserButton, ERASER_PATH);
+		JButton textButton = new JButton(new ImageIcon(TEXT_PATH));
+		changeMouse(textButton, TEXT_PATH);
+		JButton pickRectangleShape = new JButton(new ImageIcon(PICK_RECT_PATH));
+		changeMouse(pickRectangleShape, PICK_RECT_PATH);
+		JButton pickFreeShape = new JButton(new ImageIcon(PICK_FREE_PATH));
+		changeMouse(pickFreeShape, PICK_FREE_PATH);
+		JButton zoomButton = new JButton(new ImageIcon(ZOOM_PATH));
+		changeMouse(zoomButton, ZOOM_PATH);
+		dialog = new JDialog();
 		main = new JFrame();
+		color = new JColorChooser();
+		main.add(color, BorderLayout.AFTER_LAST_LINE);
 		JPanel panelVert = new JPanel();
 		panelVert.setLayout(new BoxLayout(panelVert, BoxLayout.Y_AXIS));
 		panelVert.add(pencilButton);
@@ -151,6 +206,8 @@ public class MainWindow /*extends JFrame*/ {
 		panelVert.add(pickFreeShape);
 		panelVert.add(zoomButton);
 		/// !!!!! Refactore menu!
+		// java.util
+		// ArrayList
 		for (int i = 0; i < itemsFile.length; i++) {
 			menus[0].add(itemsFile[i]);
 		}
@@ -181,39 +238,41 @@ public class MainWindow /*extends JFrame*/ {
 			}
 		};
 		main.add(paneFile);
-
-		// Clicker clicker = new Clicker();
-		// paneFile.addMouseListener(clicker);
-		// paneFile.removeMouseListener(clicker);
-
 	}
 
 	public void changeMouse(JButton button, String file) {
 		ActionListener actionListener = new TestActionListener() {// анонимный внутренний класс
 			public void actionPerformed(ActionEvent e) {
-				pointsRectangle = new LinkedList<Point>();
-				pointsCircle = new LinkedList<Point>();
-				pointsPencil = new LinkedList<Point>();
-				pointsEraser = new LinkedList<Point>();
+				pointsText = new LinkedList<Point>();
 				Toolkit toolkit = Toolkit.getDefaultToolkit();
 				Image cursor = toolkit.getImage(file);
-				System.out.println(file);
 				Point point = new Point(0, 0);
 				Cursor cursor1 = toolkit.createCustomCursor(cursor, point, "Cursor");
 				paneFile.setCursor(cursor1);
-				if (file.equals(new String("G:\\square.png"))) {
-					boo = 1;
+				if ("G:\\square.png".equals(file)) {
+					pr = new Rectangle();
 				}
 				if (file.equals(new String("G:\\circle.png"))) {
-					boo = 2;
+					pr = new Circle();
 				}
 				if (file.equals(new String("G:\\pencil.png"))) {
-					boo = 3;
+					pr = new Pencil();
 				}
 				if (file.equals(new String("G:\\eraser.png"))) {
-					boo = 4;
+					pr = new Eraser();
 				}
+				if (file.equals(new String("G:\\text.png"))) {
+					boo = 5;
+				}
+				/*
+				 * if (boo == 3 || boo == 4) { JPanel panel = new JPanel(); dialog.add(panel);
+				 * dialog.setVisible(true); dialog.setSize(400, 400); panel.setLayout(new
+				 * BoxLayout(panel, BoxLayout.X_AXIS)); JButton sizeTwice = new JButton();
+				 * sizeTwice.setText("x2"); JButton sizeThird = new JButton();
+				 * sizeThird.setText("x3"); panel.add(sizeTwice); panel.add(sizeThird); }
+				 */
 				clicker = new Clicker();
+				paneFile.setLayout(null);
 				paneFile.addMouseListener(clicker);
 			}
 		};
@@ -221,6 +280,6 @@ public class MainWindow /*extends JFrame*/ {
 	}
 
 	public static void main(String[] args) throws IOException {
-		Run.run(new MainWindow(), 1920, 1080);
+		Run.run(new MainWindow(), AREA_WIDTH, AREA_HIGHT);
 	}
 }
