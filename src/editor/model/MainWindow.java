@@ -33,6 +33,7 @@ public class MainWindow {
 	JColorChooser color;
 	File f;
 	Printable pr;
+	Graphics2D graph;
 
 	List<Point> pointsText;
 
@@ -144,6 +145,7 @@ public class MainWindow {
 		public void mouseReleased(MouseEvent e) {
 			endX = e.getX();
 			endY = e.getY();
+			pr.print(graph);
 			pr.print(main.getGraphics());
 		}
 	}
@@ -169,6 +171,7 @@ public class MainWindow {
 			for (int x = 0; x < WORK_AREA_WIDTH; x++) {
 				for (int y = 0; y < WORK_AREA_HIGHT; y++) {
 					image.setRGB(x, y, myWhite.getRGB());
+					graph = image.createGraphics();
 				}
 			}
 
@@ -282,4 +285,12 @@ public class MainWindow {
 	public static void main(String[] args) throws IOException {
 		Run.run(new MainWindow(), AREA_WIDTH, AREA_HIGHT);
 	}
+	//this part of code is really useful
+	/*
+	BufferedImage img = image.getSubimage(startX, startY, endX, endY); //fill in the corners of the desired crop location here
+	BufferedImage copyOfImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+	Graphics g = copyOfImage.createGraphics();
+	g.drawImage(img, 0, 0, null);
+	return copyOfImage; 
+	*/
 }
