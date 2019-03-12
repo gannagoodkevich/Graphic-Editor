@@ -27,13 +27,12 @@ public class MainWindow {
 	private static final String ZOOM_PATH = "G:\\find.png";
 	public JFrame main;
 	public JPanel paneFile;
-	JDialog dialog;
 	BufferedImage image;
 	JTextPane textField;
 	JColorChooser color;
 	File f;
 	Printable pr;
-	Graphics2D graph;
+	Graphics2D graphMain;
 
 	List<Point> pointsText;
 
@@ -108,6 +107,7 @@ public class MainWindow {
 			g.fillRect(startX, startY, Math.abs(endX - startX), Math.abs(endY - startY));
 			try {
 				ImageIO.write(image, "png", f);
+				
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -145,14 +145,12 @@ public class MainWindow {
 		public void mouseReleased(MouseEvent e) {
 			endX = e.getX();
 			endY = e.getY();
-			pr.print(graph);
+			pr.print(graphMain);
 			pr.print(main.getGraphics());
 		}
 	}
 
 ///////////// That part of code is about painting	
-
-	
 
 	public void paintComponentText(JTextPane textField) {
 		for (Point p : pointsText) {
@@ -161,20 +159,29 @@ public class MainWindow {
 	}
 
 /////////////
+	/// HEEEELP
+	public void pickRecShape() throws IOException {
+		/*BufferedImage img1 = image.getSubimage(200, 100, 500, 300); // fill in the corners of the desired crop location														// // here
+		BufferedImage copyOfImage = new BufferedImage(img1.getWidth(), img1.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = copyOfImage.createGraphics();
+		g.drawImage(img1, 0, 0, null);*/
+		ImageIO.read(f);
+		BufferedImage subImage = image.getSubimage(0, 0, 400, 400);
+		ImageIO.write(subImage, "png", new File("G:\\cutCut.png"));
+	}
+
 
 	public MainWindow() throws IOException {
 		try {
 			image = new BufferedImage(WORK_AREA_WIDTH, WORK_AREA_HIGHT, BufferedImage.TYPE_INT_RGB);
 			f = new File("G:\\MyFile.png");
 			myWhite = new Color(255, 255, 243);
-			image = ImageIO.read(f);
 			for (int x = 0; x < WORK_AREA_WIDTH; x++) {
 				for (int y = 0; y < WORK_AREA_HIGHT; y++) {
 					image.setRGB(x, y, myWhite.getRGB());
-					graph = image.createGraphics();
+					graphMain = image.createGraphics();
 				}
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -194,7 +201,6 @@ public class MainWindow {
 		changeMouse(pickFreeShape, PICK_FREE_PATH);
 		JButton zoomButton = new JButton(new ImageIcon(ZOOM_PATH));
 		changeMouse(zoomButton, ZOOM_PATH);
-		dialog = new JDialog();
 		main = new JFrame();
 		color = new JColorChooser();
 		main.add(color, BorderLayout.AFTER_LAST_LINE);
@@ -241,10 +247,11 @@ public class MainWindow {
 			}
 		};
 		main.add(paneFile);
+		pickRecShape();
 	}
 
 	public void changeMouse(JButton button, String file) {
-		ActionListener actionListener = new TestActionListener() {// àíîíèìíûé âíóòðåííèé êëàññ
+		ActionListener actionListener = new TestActionListener() {// Ã Ã­Ã®Ã­Ã¨Ã¬Ã­Ã»Ã© Ã¢Ã­Ã³Ã²Ã°Ã¥Ã­Ã­Ã¨Ã© ÃªÃ«Ã Ã±Ã±
 			public void actionPerformed(ActionEvent e) {
 				pointsText = new LinkedList<Point>();
 				Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -267,13 +274,6 @@ public class MainWindow {
 				if (file.equals(new String("G:\\text.png"))) {
 					boo = 5;
 				}
-				/*
-				 * if (boo == 3 || boo == 4) { JPanel panel = new JPanel(); dialog.add(panel);
-				 * dialog.setVisible(true); dialog.setSize(400, 400); panel.setLayout(new
-				 * BoxLayout(panel, BoxLayout.X_AXIS)); JButton sizeTwice = new JButton();
-				 * sizeTwice.setText("x2"); JButton sizeThird = new JButton();
-				 * sizeThird.setText("x3"); panel.add(sizeTwice); panel.add(sizeThird); }
-				 */
 				clicker = new Clicker();
 				paneFile.setLayout(null);
 				paneFile.addMouseListener(clicker);
@@ -285,12 +285,4 @@ public class MainWindow {
 	public static void main(String[] args) throws IOException {
 		Run.run(new MainWindow(), AREA_WIDTH, AREA_HIGHT);
 	}
-	//this part of code is really useful
-	/*
-	BufferedImage img = image.getSubimage(startX, startY, endX, endY); //fill in the corners of the desired crop location here
-	BufferedImage copyOfImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
-	Graphics g = copyOfImage.createGraphics();
-	g.drawImage(img, 0, 0, null);
-	return copyOfImage; 
-	*/
 }
