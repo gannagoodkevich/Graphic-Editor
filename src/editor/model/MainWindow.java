@@ -10,13 +10,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import editor.utiles.*;
+import editor.utiles.ScrollDemo2.DrawingPane;
 
 public class MainWindow {
 
-	private static final int WORK_AREA_WIDTH = 1800;
-	private static final int WORK_AREA_HIGHT = 1000;
-	private static final int AREA_WIDTH = 1920;
-	private static final int AREA_HIGHT = 1080;
+	private static final int WORK_AREA_WIDTH = 2000;
+	private static final int WORK_AREA_HIGHT = 2000;
+	private static final int AREA_WIDTH = 500;
+	private static final int AREA_HIGHT = 500;
 	private static final String PENCIL_PATH = "G:\\pencil.png";
 	private static final String CIRCLE_PATH = "G:\\circle.png";
 	private static final String RECTANGLE_PATH = "G:\\square.png";
@@ -27,6 +28,7 @@ public class MainWindow {
 	private static final String ZOOM_PATH = "G:\\find.png";
 	public JFrame main;
 	public JPanel paneFile;
+	public JPanel paneFileImage;
 	BufferedImage image;
 	JTextPane textField;
 	JColorChooser color;
@@ -203,7 +205,8 @@ public class MainWindow {
 		changeMouse(zoomButton, ZOOM_PATH);
 		main = new JFrame();
 		color = new JColorChooser();
-		main.add(color, BorderLayout.AFTER_LAST_LINE);
+		color.setBounds(100, 680, 1800, 270);
+		main.add(color);
 		JPanel panelVert = new JPanel();
 		panelVert.setLayout(new BoxLayout(panelVert, BoxLayout.Y_AXIS));
 		panelVert.add(pencilButton);
@@ -239,6 +242,8 @@ public class MainWindow {
 		}
 		main.setJMenuBar(menuBar);
 		main.add(panelVert, BorderLayout.WEST);
+		//paneFile = new JPanel();
+		//paneFile.setBounds(100, 100, 1720, 730);
 		paneFile = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics graph) {
@@ -246,8 +251,17 @@ public class MainWindow {
 				graph.drawImage(image, 10, 0, null);
 			}
 		};
+		//paneFileImage.setBounds(100, 100, 1720, 730);
 		main.add(paneFile);
 		pickRecShape();
+		JScrollPane scroller = new JScrollPane(paneFile, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);;
+		//scroller.setPreferredSize(new Dimension(100, 100));
+        Dimension  area = new Dimension(0,0);
+        paneFile.setPreferredSize(area);
+        scroller.setPreferredSize(new Dimension(1500, 1080));
+        paneFile.revalidate();
+		main.add(scroller);
 	}
 
 	public void changeMouse(JButton button, String file) {
@@ -259,19 +273,19 @@ public class MainWindow {
 				Point point = new Point(0, 0);
 				Cursor cursor1 = toolkit.createCustomCursor(cursor, point, "Cursor");
 				paneFile.setCursor(cursor1);
-				if ("G:\\square.png".equals(file)) {
+				if (RECTANGLE_PATH.equals(file)) {
 					pr = new Rectangle();
 				}
-				if (file.equals(new String("G:\\circle.png"))) {
+				if (CIRCLE_PATH.equals(file)) {
 					pr = new Circle();
 				}
-				if (file.equals(new String("G:\\pencil.png"))) {
+				if (PENCIL_PATH.equals(file)) {
 					pr = new Pencil();
 				}
-				if (file.equals(new String("G:\\eraser.png"))) {
+				if (ERASER_PATH.equals(file)) {
 					pr = new Eraser();
 				}
-				if (file.equals(new String("G:\\text.png"))) {
+				if (TEXT_PATH.equals(file)) {
 					boo = 5;
 				}
 				clicker = new Clicker();
