@@ -1,21 +1,58 @@
 package editor.model;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.imageio.ImageIO;
-import javax.swing.JColorChooser;
 
-class Pencil implements Printable {
-	MainWindow mw= new MainWindow();
-	
+class Pencil extends MouseAdapter {
+	MainWindow main;
+	int startX;
+	int startY;
+	int endX;
+	int endY;
+	MouseMotionListener listen;
+
+	Pencil(MainWindow main) {
+		this.main = main;
+	}
+
 	@Override
-	public void print(Graphics g) {
-		g.setColor(mw.color.getColor());
-		g.drawLine(mw.startX, mw.startY, mw.endX, mw.endY);
+	public void mousePressed(MouseEvent e) {
+		startX = e.getX();
+		startY = e.getY();
+		listen = new MouseMotionListener() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				endX = e.getX();
+				endY = e.getY();
+				System.out.println("Mouse Dragged");
+				System.out.println(endX);
+				System.out.println(endY);
+				print(main.label.getGraphics());
+				print(main.graphMain);
+				startX = endX;
+				startY = endY;
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+			}
+		};
+		main.label.addMouseMotionListener(listen);
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		main.label.removeMouseMotionListener(listen);
+	}
+
+	public void print(Graphics graph) {
+		graph.setColor(main.color.getColor());
+		graph.drawLine(startX, startY, endX, endY);
 		try {
-			ImageIO.write(mw.image, "png", mw.f);
+			ImageIO.write(main.image, "png", main.f);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
