@@ -11,13 +11,12 @@ import java.awt.event.MouseMotionListener;
 
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-
-//import javax.swing.ImageIcon;
 class PickFreeShape extends MouseAdapter {
 
+	int WORK_AREA_WIDTH;
+	int WORK_AREA_HIGHT;
 	int NumOfClick;
-	private static final int NUM_OF_VERT = 4;
+	private static final int NUM_OF_VERT = 6;
 	MainWindow main;
 	ArrayList<Integer> polyX = new ArrayList<Integer>();
 	ArrayList<Integer> polyY = new ArrayList<Integer>();
@@ -38,24 +37,21 @@ class PickFreeShape extends MouseAdapter {
 	public void mouseClicked(MouseEvent e) {
 		if (NumOfClick < NUM_OF_VERT) {
 			NumOfClick += e.getClickCount();
-			System.out.println(NumOfClick);
 			polyX.add(e.getX());
 			polyY.add(e.getY());
-			print(main.label.getGraphics());
+			print(main.getGraphicsLabel());
 		} else {
 			NumOfClick = 0;
-			print(main.label.getGraphics());
-			print(main.graphMain);
-			main.label.getGraphics().drawImage(main.image, 0, 0, null);
-			try {
-				ImageIO.write(main.image, "png", main.f);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+			print(main.getGraphicsLabel());
+			print(main.getgraphMain());
+			main.getGraphicsLabel().drawImage(main.getImage(), 0, 0, null);
+			main.updateImage();
 		}
 	}
 
 	public void print(Graphics graph) {
+		WORK_AREA_WIDTH = main.getImage().getWidth();
+		WORK_AREA_HIGHT = main.getImage().getHeight();
 		graph.setColor(Color.BLUE);
 		int[] polyXarr = new int[polyX.size()];
 		int[] polyYarr = new int[polyY.size()];
@@ -68,32 +64,28 @@ class PickFreeShape extends MouseAdapter {
 		poly = new Polygon(polyXarr, polyYarr, polyX.size());//
 		graph.drawPolygon(poly);
 
-		MouseListener click = new MouseListener() {
+		MouseListener click = new MouseListener() { //anonym inner class that make interface
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void mousePressed(MouseEvent m) {
-				System.out.println("Pressed!");
 				startX = m.getX();
 				startY = m.getY();
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent m) {
-				// TODO Auto-generated method stub
-				System.out.println("Released!");
 				endX = m.getX();
 				endY = m.getY();
-				for (int i = 0; i < 1800; i++) {
-					for (int j = 0; j < 900; j++) {
+				for (int i = 0; i < WORK_AREA_WIDTH; i++) {
+					for (int j = 0; j < WORK_AREA_HIGHT; j++) {
 						if (poly.contains(i, j)) {
-							main.image.setRGB(i + Math.abs(endX - startX), j + Math.abs(endX - startX),
-									main.image.getRGB(i, j));
+							main.getImage().setRGB(i + Math.abs(endX - startX), j + Math.abs(endX - startX),
+									main.getImage().getRGB(i, j));
 						}
 					}
 				}
@@ -101,19 +93,14 @@ class PickFreeShape extends MouseAdapter {
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
+			
 			}
-
 			@Override
 			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
 
 			}
-
 		};
-		main.label.addMouseListener(click);
-
+		main.addMouseListener(click);
 	}
 
 }

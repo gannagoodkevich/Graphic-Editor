@@ -10,9 +10,11 @@ import javax.swing.ImageIcon;
 class Zoom extends MouseAdapter {
 
 	MainWindow main;
-	int imageWidth = 1800;
-	int imageHeight = 900;
 	int zoomLevel = 2;
+	int newImageWidth;
+	int newImageHeight;
+	int imageWidth;
+	int imageHeight;
 
 	Zoom(MainWindow main) {
 		this.main = main;
@@ -21,15 +23,17 @@ class Zoom extends MouseAdapter {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
-			int newImageWidth = imageWidth * zoomLevel;
-			int newImageHeight = imageHeight * zoomLevel;
+			imageWidth = main.getImage().getWidth();
+			imageHeight = main.getImage().getHeight();
+			newImageWidth = imageWidth * zoomLevel;
+			newImageHeight = imageHeight * zoomLevel;
 			BufferedImage resizedImage = new BufferedImage(newImageWidth, newImageHeight, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = resizedImage.createGraphics();
-			g.drawImage(main.image, 0, 0, newImageWidth, newImageHeight, null);
-			main.label.setIcon(new ImageIcon(resizedImage));
+			g.drawImage(main.getImage(), 0, 0, newImageWidth, newImageHeight, null);
+			main.getLabel().setIcon(new ImageIcon(resizedImage));
 		}
 		if (e.getButton() == MouseEvent.BUTTON3) {
-			main.label.setIcon(new ImageIcon(main.image));
+			main.getLabel().setIcon(new ImageIcon(main.getImage()));
 		}
 	}
 }

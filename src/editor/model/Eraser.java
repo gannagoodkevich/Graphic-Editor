@@ -5,8 +5,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
-import javax.imageio.ImageIO;
-
 class Eraser extends MouseAdapter {
 
 	MainWindow main;
@@ -29,32 +27,25 @@ class Eraser extends MouseAdapter {
 			public void mouseDragged(MouseEvent e) {
 				endX = e.getX();
 				endY = e.getY();
-				System.out.println("Mouse Dragged");
-				System.out.println(endX);
-				System.out.println(endY);
-				print(main.label.getGraphics());
+				print(main.getGraphicsLabel());
 			}
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
 			}
 		};
-		main.label.addMouseMotionListener(listen);
+		main.addMouseMotionListener(listen);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		main.label.removeMouseMotionListener(listen);
-		print(main.graphMain);
+		main.removeMouseMotionListener(listen);
+		print(main.getgraphMain());
 	}
 
 	public void print(Graphics graph) {
-		graph.setColor(main.myWhite);
+		graph.setColor(main.getWhite());
 		graph.fillRect(startX, startY, Math.abs(endX - startX), Math.abs(endY - startY));
-		try {
-			ImageIO.write(main.image, "png", main.f);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		main.updateImage();
 	}
 }

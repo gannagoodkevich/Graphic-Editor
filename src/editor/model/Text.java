@@ -22,10 +22,10 @@ class Text extends MouseAdapter {
 		JTextPane textField = new JTextPane();
 		textField.setText("Add text here!");
 		pointsText.add(e.getPoint());
-		textField.setBackground(main.myWhite);
+		textField.setBackground(main.getWhite());
 		for (Point p : pointsText) {
 			textField.setBounds(p.x, p.y, 100, 50);
 		}
-		main.label.add(textField);
+		main.getLabel().add(textField);
 	}
 }

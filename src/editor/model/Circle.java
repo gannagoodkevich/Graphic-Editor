@@ -28,36 +28,29 @@ class Circle extends MouseAdapter {
 			public void mouseDragged(MouseEvent e) {
 				endX = e.getX();
 				endY = e.getY();
-				System.out.println("Mouse Dragged");
-				System.out.println(endX);
-				System.out.println(endY);
-				print(main.label.getGraphics());
+				print(main.getGraphicsLabel());
 			}
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
 			}
 		};
-		main.label.addMouseMotionListener(listen);
+		main.addMouseMotionListener(listen);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		main.label.removeMouseMotionListener(listen);
-		print(main.graphMain);
+		main.removeMouseMotionListener(listen);
+		print(main.getgraphMain());
 	}
 
 	public void print(Graphics graph) {
-		graph.setColor(main.color.getColor());
+		graph.setColor(main.getColor());
 		int radius = Math.abs((endX - startX) / 2);
 		int x = startX - (radius / 2);
 		int y = startY - (radius / 2);
 		graph.fillOval(x, y, radius, radius);
 		;
-		try {
-			ImageIO.write(main.image, "png", main.f);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		main.updateImage();
 	}
 }
